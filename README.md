@@ -17,15 +17,15 @@ This research proposes a **Percentile-Based Threshold Scheduler (PBTS)** that dy
 The simulation compared the PBTS algorithm against a standard Carbon-Blind Baseline Scheduler over an extended execution window. 
 
 * **Graph 1: Grid Volatility & Green Windows**
-  ![Grid Profile](results/plot1_grid_profile.png) 
+  ![Grid Profile](results\fig2_grid_profile.png) 
   *Demonstrates the dynamic 30th-percentile threshold identifying optimal execution windows amidst volatile grid intensity.*
 
 * **Graph 2: Net Impact (Energy vs. Carbon)**
-  ![Cumulative Emissions](results/plot3_cumulative_emissions.png)
+  ![Cumulative Emissions](results\fig3_zoomed_view.png)
   *Proves a 0.9% absolute reduction in total carbon emissions while maintaining identical energy consumption (kWh) and zero SLA violations.*
 
 * **Graph 3: Hour-of-Day Workload Shift**
-  ![Workload Shift](results/plot5_workload_shift.png)
+  ![Workload Shift](results\fig4_workload_shift.png)
   *Illustrates the successful diversion of computational load away from evening fossil-fuel peaks to midday renewable generation peaks.*
 
 ## How to Run the Simulation
