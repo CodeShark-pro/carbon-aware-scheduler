@@ -286,12 +286,14 @@ class CarbonAwareScheduler:
 
 # Function to generate a random workload of tasks with realistic arrival patterns, durations, power requirements, and deadlines based on the grid data
 def generate_random_workload(df, n_tasks=200):
+    # NOTE: Seed is intentionally NOT set here.
+    # The caller (the 30-run loop) sets np.random.seed(i) before each call
+    # so that each run is statistically independent. A static seed here
+    # would override that and produce identical workloads every run.
 
     tasks = []
 
     max_idx = len(df) - 96
-
-    np.random.seed(42)
 
     arrival_indices = np.random.randint(0, max_idx, size=n_tasks)
 
@@ -301,8 +303,14 @@ def generate_random_workload(df, n_tasks=200):
     powers = np.random.normal(loc=10.0, scale=3.0, size=n_tasks)
     powers = np.clip(powers, 1.0, 50.0)
 
-    delays = np.random.exponential(scale=12.0, size=n_tasks)
-    delays = np.clip(np.round(delays), 2, 72).astype(int)
+    # BUG FIX: Minimum delay raised from 2 → 24 slots (1 hr → 12 hrs).
+    # With Exponential(scale=4) durations, a 2-slot minimum meant many tasks
+    # had max_delay < duration, causing `must_start` to fire immediately on
+    # arrival and collapsing PBTS back to a deterministic FCFS baseline.
+    # 24 slots guarantees every task has at least 12 hours of deferral slack,
+    # giving the green-window check a meaningful opportunity to act.
+    delays = np.random.exponential(scale=24.0, size=n_tasks)
+    delays = np.clip(np.round(delays), 24, 144).astype(int)
 
     for i in range(n_tasks):
 
